@@ -5,37 +5,7 @@
 
 M5GFX display;
 
-namespace PageManager
-{
-	namespace impl
-	{
-		size_t index = 0;
-		std::map<size_t, uilib::Page *> pages;
-	}
-
-	void add(uilib::Page *page, size_t id)
-	{
-		impl::pages[id] = page;
-	}
-
-	void update()
-	{
-		impl::pages[impl::index]->update();
-	}
-
-	void set(size_t id)
-	{
-		if (impl::pages.find(impl::index) != impl::pages.end())
-		{
-			impl::pages[impl::index]->setActive(false);
-		}
-		impl::index = id;
-		if (impl::pages.find(id) != impl::pages.end())
-		{
-			impl::pages[id]->load();
-		}
-	}
-}
+namespace PageManager = uilib::PageManager;
 
 class PageHome : public uilib::Page
 {
