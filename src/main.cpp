@@ -15,6 +15,7 @@ private:
 
 	uilib::DButton btn1, btn2, btn3;
 	uilib::DButton btn4, btn5, btn6, btn7, btn8, btn9;
+	uilib::BatteryIcon battery_icon;
 
 public:
 	void loop() override
@@ -67,6 +68,9 @@ public:
 		label_title = uilib::Label("M5 UILib Home", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
 		label_title.setAlign(uilib::Align::CENTER);
 
+		// バッテリー残量表示
+		battery_icon = uilib::BatteryIcon({310, 9}, true, this);
+
 		// 3行3列 of Grid (完全に埋める)
 		grid = uilib::Grid({20, 60}, 280, 150, 3, 3, 0x18C3, this);
 		grid.setStrokeWidth(2);
@@ -98,6 +102,7 @@ public:
 
 		// ページに要素を登録
 		addElement(&label_title);
+		addElement(&battery_icon);
 		addElement(&grid);
 
 		addElement(&btn1);
@@ -1132,6 +1137,7 @@ private:
 	uilib::DButton btn_back;
 	uilib::Keyboard *keyboard = nullptr;
 	uilib::MessageBox *message_box = nullptr;
+	uilib::BatteryIcon battery_icon;
 
 public:
 	~Page9()
@@ -1167,6 +1173,9 @@ public:
 		label_title = uilib::Label("Keyboard Demo", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
 		label_title.setAlign(uilib::Align::CENTER);
 
+		// バッテリー残量表示
+		battery_icon = uilib::BatteryIcon({310, 9}, true, this);
+
 		// 入力テキスト表示ボックス (Placeholder text)
 		label_input_box = uilib::Label("Tap keys to type...", {15, 55}, WHITE, 0x18C3, 1.0f, this, &fonts::efontJA_14, 6, 4);
 		label_input_box.setRadius(2);
@@ -1194,6 +1203,7 @@ public:
 
 		// ページへ登録
 		addElement(&label_title);
+		addElement(&battery_icon);
 		addElement(&label_input_box);
 		addElement(&btn_clear);
 		addElement(&btn_back);
