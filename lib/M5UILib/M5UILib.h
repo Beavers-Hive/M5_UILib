@@ -26,6 +26,7 @@
 #include "elements/tab_panel.h"
 #include "elements/message_box.h"
 #include "elements/keyboard.h"
+#include "elements/battery_icon.h"
 #include "page.h"
 #include "pagemanager.h"
 #endif // UILIB_M5UI_H
