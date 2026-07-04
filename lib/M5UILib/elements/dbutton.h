@@ -23,6 +23,7 @@ namespace uilib {
         color_t pressed_color = WHITE;     ///< 押されている時のテキスト・枠線色
         color_t pressed_bg_color = BLACK;  ///< 押されている時の背景色
 
+    public:
         /**
          * @brief ボタンの背景矩形の座標・サイズを取得します
          */

@@ -14,7 +14,7 @@ private:
 	uilib::Grid grid;
 
 	uilib::DButton btn1, btn2, btn3;
-	uilib::DButton btn4, btn5, btn6, btn7, btn8;
+	uilib::DButton btn4, btn5, btn6, btn7, btn8, btn9;
 
 public:
 	void loop() override
@@ -51,6 +51,10 @@ public:
 		{
 			PageManager::set(8);
 		}
+		if (btn9.wasReleased())
+		{
+			PageManager::set(9);
+		}
 	}
 
 	void init() override
@@ -63,7 +67,7 @@ public:
 		label_title = uilib::Label("M5 UILib Home", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
 		label_title.setAlign(uilib::Align::CENTER);
 
-		// 3行3列 of Grid
+		// 3行3列 of Grid (完全に埋める)
 		grid = uilib::Grid({20, 60}, 280, 150, 3, 3, 0x18C3, this);
 		grid.setStrokeWidth(2);
 		grid.setBorderColor(uilib::Color(100, 255, 100));
@@ -80,6 +84,7 @@ public:
 		btn6 = uilib::DButton("Demo 6", {0, 0}, WHITE, btn_bg, 1.0f, this, &fonts::efontJA_14, 4, 6);
 		btn7 = uilib::DButton("Demo 7", {0, 0}, WHITE, btn_bg, 1.0f, this, &fonts::efontJA_14, 4, 6);
 		btn8 = uilib::DButton("Demo 8", {0, 0}, WHITE, btn_bg, 1.0f, this, &fonts::efontJA_14, 4, 6);
+		btn9 = uilib::DButton("Keyboard", {0, 0}, WHITE, btn_bg, 1.0f, this, &fonts::efontJA_14, 4, 6);
 
 		grid.addChild(&btn1);
 		grid.addChild(&btn2);
@@ -89,6 +94,7 @@ public:
 		grid.addChild(&btn6);
 		grid.addChild(&btn7);
 		grid.addChild(&btn8);
+		grid.addChild(&btn9);
 
 		// ページに要素を登録
 		addElement(&label_title);
@@ -102,6 +108,7 @@ public:
 		addElement(&btn6);
 		addElement(&btn7);
 		addElement(&btn8);
+		addElement(&btn9);
 
 		PageManager::add(this, 0);
 	}
@@ -1116,6 +1123,87 @@ public:
 	}
 };
 
+class Page9 : public uilib::Page
+{
+private:
+	uilib::Label label_title;
+	uilib::Label label_input_box;
+	uilib::DButton btn_clear;
+	uilib::DButton btn_back;
+	uilib::Keyboard *keyboard = nullptr;
+	uilib::MessageBox *message_box = nullptr;
+
+public:
+	~Page9()
+	{
+		delete keyboard;
+		delete message_box;
+	}
+
+	void loop() override
+	{
+		if (btn_back.wasReleased())
+		{
+			Serial.println("Back button released! Returning to Home Page (Page 0)");
+			PageManager::set(0);
+		}
+		if (btn_clear.wasReleased())
+		{
+			Serial.println("Clear button released! Clearing keyboard text");
+			if (keyboard)
+			{
+				keyboard->clear();
+			}
+		}
+	}
+
+	void init() override
+	{
+		uilib::Page::init({M5.Lcd.width(), M5.Lcd.height()}, BLACK, &M5.Lcd, 16);
+
+		// タイトルラベル (Green background)
+		uilib::Color title_fg(255, 255, 255);
+		uilib::Color title_bg = uilib::Color::fromHSV(120.0f, 1.0f, 0.4f);
+		label_title = uilib::Label("Keyboard Demo", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
+		label_title.setAlign(uilib::Align::CENTER);
+
+		// 入力テキスト表示ボックス (Placeholder text)
+		label_input_box = uilib::Label("Tap keys to type...", {15, 55}, WHITE, 0x18C3, 1.0f, this, &fonts::efontJA_14, 6, 4);
+		label_input_box.setRadius(2);
+
+		// クリアボタン
+		btn_clear = uilib::DButton("Clear", {215, 55}, WHITE, 0xA000, 1.0f, this, &fonts::efontJA_14, 8, 4);
+
+		// 戻るボタン
+		btn_back = uilib::DButton("Back", {275, 55}, WHITE, 0x4A69, 1.0f, this, &fonts::efontJA_14, 8, 4);
+
+		// キーボードの配置
+		keyboard = new uilib::Keyboard({0, 120}, this);
+		keyboard->setTargetLabel(&label_input_box);
+
+		// メッセージボックス
+		message_box = new uilib::MessageBox({40, 55}, 240, 130, 0x2104, this);
+
+		// 決定(Enter)時のコールバック
+		keyboard->setOnSubmitCallback([this](const String& text) {
+			Serial.printf("Keyboard submitted: %s\n", text.c_str());
+			message_box->show("Submitted Text", "You entered:\n" + (text.isEmpty() ? String("(empty)") : text), uilib::MessageBoxType::OK, [this](uilib::MessageBoxResult result) {
+				message_box->hide();
+			});
+		});
+
+		// ページへ登録
+		addElement(&label_title);
+		addElement(&label_input_box);
+		addElement(&btn_clear);
+		addElement(&btn_back);
+		addElement(keyboard);
+		addElement(message_box); // 最前面に重ねるために最後に追加
+
+		PageManager::add(this, 9);
+	}
+};
+
 PageHome page_home;
 Page1 page_1;
 Page2 page_2;
@@ -1125,6 +1213,7 @@ Page5 page_5;
 Page6 page_6;
 Page7 page_7;
 Page8 page_8;
+Page9 page_9;
 
 void setup()
 {
@@ -1143,6 +1232,7 @@ void setup()
 	page_6.init();
 	page_7.init();
 	page_8.init();
+	page_9.init();
 	PageManager::set(0);
 	Serial.println("Initialized");
 }
