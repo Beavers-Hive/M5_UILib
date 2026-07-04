@@ -4,3 +4,5 @@
 .vscode/launch.json
 .vscode/ipch
 *.log
+compile_commands.json
+.vscode/extensions.json

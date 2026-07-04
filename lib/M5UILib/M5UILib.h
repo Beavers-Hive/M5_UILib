@@ -25,6 +25,7 @@
 #include "elements/scroll_panel.h"
 #include "elements/tab_panel.h"
 #include "elements/message_box.h"
+#include "elements/keyboard.h"
 #include "page.h"
 #include "pagemanager.h"
 #endif // UILIB_M5UI_H
