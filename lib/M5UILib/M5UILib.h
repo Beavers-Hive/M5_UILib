@@ -27,6 +27,10 @@
 #include "elements/message_box.h"
 #include "elements/keyboard.h"
 #include "elements/battery_icon.h"
+#include "elements/time_display.h"
+#include "elements/statusbar.h"
+#include "elements/wifi_icon.h"
+#include "elements/bluetooth_icon.h"
 #include "page.h"
 #include "pagemanager.h"
 #endif // UILIB_M5UI_H

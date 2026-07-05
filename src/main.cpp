@@ -15,9 +15,26 @@ private:
 
 	uilib::DButton btn1, btn2, btn3;
 	uilib::DButton btn4, btn5, btn6, btn7, btn8, btn9;
-	uilib::BatteryIcon battery_icon;
+
+	// ステータスバーと構成コンポーネ组件のポインタ
+	uilib::StatusBar *status_bar = nullptr;
+	uilib::Label *status_label = nullptr;
+	uilib::TimeDisplay *time_disp = nullptr;
+	uilib::BatteryIcon *battery_icon = nullptr;
+	uilib::WiFiIcon *wifi_icon = nullptr;
+	uilib::BluetoothIcon *bluetooth_icon = nullptr;
 
 public:
+	~PageHome()
+	{
+		delete status_bar;
+		delete status_label;
+		delete time_disp;
+		delete battery_icon;
+		delete wifi_icon;
+		delete bluetooth_icon;
+	}
+
 	void loop() override
 	{
 		if (btn1.wasReleased())
@@ -62,14 +79,38 @@ public:
 	{
 		uilib::Page::init({M5.Lcd.width(), M5.Lcd.height()}, BLACK, &M5.Lcd, 16);
 
-		// タイトルラベル
+		// ステータスバー土台の構築
+		status_bar = new uilib::StatusBar(this);
+
+		// コンポーネントをそれぞれアライメント指定で構築
+		status_label = new uilib::Label("M5UILib", {0, 0}, WHITE, BLACK, 1.0f, this, &fonts::Font0);
+		status_label->setAlign(uilib::Align::LEFT);
+
+		time_disp = new uilib::TimeDisplay({0, 0}, this);
+		time_disp->setAlign(uilib::Align::CENTER);
+
+		battery_icon = new uilib::BatteryIcon({0, 0}, true, this);
+		battery_icon->setAlign(uilib::Align::RIGHT);
+
+		wifi_icon = new uilib::WiFiIcon({0, 0}, this);
+		wifi_icon->setAlign(uilib::Align::RIGHT);
+
+		bluetooth_icon = new uilib::BluetoothIcon({0, 0}, this);
+		bluetooth_icon->setAlign(uilib::Align::RIGHT);
+		bluetooth_icon->setConnected(true); // 初期状態で接続中（アクティブ）として表示
+
+		// 土台に追加 (自動整列されます。右寄せは追加順に右から左へ並びます)
+		status_bar->addChild(status_label);
+		status_bar->addChild(time_disp);
+		status_bar->addChild(battery_icon);
+		status_bar->addChild(wifi_icon);
+		status_bar->addChild(bluetooth_icon);
+
+		// タイトルラベル (ステータスバーを避けて Y=34 に配置)
 		uilib::Color title_fg(255, 255, 255);
 		uilib::Color title_bg = uilib::Color::fromHSV(0.0f, 1.0f, 0.4f); // 赤系のタイトル背景
-		label_title = uilib::Label("M5 UILib Home", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
+		label_title = uilib::Label("M5 UILib Home", {160, 34}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
 		label_title.setAlign(uilib::Align::CENTER);
-
-		// バッテリー残量表示
-		battery_icon = uilib::BatteryIcon({310, 9}, true, this);
 
 		// 3行3列 of Grid (完全に埋める)
 		grid = uilib::Grid({20, 60}, 280, 150, 3, 3, 0x18C3, this);
@@ -101,8 +142,8 @@ public:
 		grid.addChild(&btn9);
 
 		// ページに要素を登録
+		addElement(status_bar);
 		addElement(&label_title);
-		addElement(&battery_icon);
 		addElement(&grid);
 
 		addElement(&btn1);
@@ -1137,11 +1178,24 @@ private:
 	uilib::DButton btn_back;
 	uilib::Keyboard *keyboard = nullptr;
 	uilib::MessageBox *message_box = nullptr;
-	uilib::BatteryIcon battery_icon;
+
+	// ステータスバーと構成コンポーネントのポインタ
+	uilib::StatusBar *status_bar = nullptr;
+	uilib::Label *status_label = nullptr;
+	uilib::TimeDisplay *time_disp = nullptr;
+	uilib::BatteryIcon *battery_icon = nullptr;
+	uilib::WiFiIcon *wifi_icon = nullptr;
+	uilib::BluetoothIcon *bluetooth_icon = nullptr;
 
 public:
 	~Page9()
 	{
+		delete status_bar;
+		delete status_label;
+		delete time_disp;
+		delete battery_icon;
+		delete wifi_icon;
+		delete bluetooth_icon;
 		delete keyboard;
 		delete message_box;
 	}
@@ -1167,31 +1221,55 @@ public:
 	{
 		uilib::Page::init({M5.Lcd.width(), M5.Lcd.height()}, BLACK, &M5.Lcd, 16);
 
-		// タイトルラベル (Green background)
+		// ステータスバー土台の構築
+		status_bar = new uilib::StatusBar(this);
+
+		// コンポーネントをそれぞれアライメント指定で構築
+		status_label = new uilib::Label("Input", {0, 0}, WHITE, BLACK, 1.0f, this, &fonts::Font0);
+		status_label->setAlign(uilib::Align::LEFT);
+
+		time_disp = new uilib::TimeDisplay({0, 0}, this);
+		time_disp->setAlign(uilib::Align::CENTER);
+
+		battery_icon = new uilib::BatteryIcon({0, 0}, true, this);
+		battery_icon->setAlign(uilib::Align::RIGHT);
+
+		wifi_icon = new uilib::WiFiIcon({0, 0}, this);
+		wifi_icon->setAlign(uilib::Align::RIGHT);
+
+		bluetooth_icon = new uilib::BluetoothIcon({0, 0}, this);
+		bluetooth_icon->setAlign(uilib::Align::RIGHT);
+		bluetooth_icon->setConnected(true); // 初期状態で接続中（アクティブ）として表示
+
+		// 土台に追加 (自動整列されます。右寄せは追加順に右から左へ並びます)
+		status_bar->addChild(status_label);
+		status_bar->addChild(time_disp);
+		status_bar->addChild(battery_icon);
+		status_bar->addChild(wifi_icon);
+		status_bar->addChild(bluetooth_icon);
+
+		// タイトルラベル (Green background - ステータスバーを避けて Y=34 に配置)
 		uilib::Color title_fg(255, 255, 255);
 		uilib::Color title_bg = uilib::Color::fromHSV(120.0f, 1.0f, 0.4f);
-		label_title = uilib::Label("Keyboard Demo", {160, 15}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
+		label_title = uilib::Label("Keyboard Demo", {160, 34}, title_fg, title_bg, 1.0f, this, &fonts::lgfxJapanGothic_20, 4, 4);
 		label_title.setAlign(uilib::Align::CENTER);
 
-		// バッテリー残量表示
-		battery_icon = uilib::BatteryIcon({310, 9}, true, this);
-
-		// 入力テキスト表示ボックス (Placeholder text)
-		label_input_box = uilib::Label("Tap keys to type...", {15, 55}, WHITE, 0x18C3, 1.0f, this, &fonts::efontJA_14, 6, 4);
+		// 入力テキスト表示ボックス (Overlap避けて Y=70 に配置)
+		label_input_box = uilib::Label("Tap keys to type...", {15, 70}, WHITE, 0x18C3, 1.0f, this, &fonts::efontJA_14, 6, 4);
 		label_input_box.setRadius(2);
 
 		// クリアボタン
-		btn_clear = uilib::DButton("Clear", {215, 55}, WHITE, 0xA000, 1.0f, this, &fonts::efontJA_14, 8, 4);
+		btn_clear = uilib::DButton("Clear", {215, 70}, WHITE, 0xA000, 1.0f, this, &fonts::efontJA_14, 8, 4);
 
 		// 戻るボタン
-		btn_back = uilib::DButton("Back", {275, 55}, WHITE, 0x4A69, 1.0f, this, &fonts::efontJA_14, 8, 4);
+		btn_back = uilib::DButton("Back", {275, 70}, WHITE, 0x4A69, 1.0f, this, &fonts::efontJA_14, 8, 4);
 
 		// キーボードの配置
 		keyboard = new uilib::Keyboard({0, 120}, this);
 		keyboard->setTargetLabel(&label_input_box);
 
 		// メッセージボックス
-		message_box = new uilib::MessageBox({40, 55}, 240, 130, 0x2104, this);
+		message_box = new uilib::MessageBox({40, 70}, 240, 130, 0x2104, this);
 
 		// 決定(Enter)時のコールバック
 		keyboard->setOnSubmitCallback([this](const String& text) {
@@ -1202,8 +1280,8 @@ public:
 		});
 
 		// ページへ登録
+		addElement(status_bar);
 		addElement(&label_title);
-		addElement(&battery_icon);
 		addElement(&label_input_box);
 		addElement(&btn_clear);
 		addElement(&btn_back);
